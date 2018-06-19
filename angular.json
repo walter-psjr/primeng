@@ -28,6 +28,7 @@
                 "node_modules/quill/dist/quill.snow.css",
                 "node_modules/primeicons/primeicons.css",
                 "node_modules/font-awesome/css/font-awesome.min.css",
+                "src/assets/components/themes/omega/theme.scss",
                 "src/styles.css"
               ],
               "scripts": [

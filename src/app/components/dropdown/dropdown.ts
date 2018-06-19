@@ -504,6 +504,7 @@ export class Dropdown implements OnInit,AfterViewInit,AfterContentInit,AfterView
     }
     
     onKeydown(event) {
+        console.log(event.which);
         if(this.readonly || !this.optionsToDisplay || this.optionsToDisplay.length === null) {
             return;
         }
@@ -603,6 +604,27 @@ export class Dropdown implements OnInit,AfterViewInit,AfterContentInit,AfterView
             case 27:
             case 9:
                 this.hide();
+            break;
+
+            default:
+                // a-z
+                if (event.which >= 65 && event.which <= 90) {
+                    console.log(event.key);
+                    console.log(this.optionsToDisplay);
+                    console.log(this.selectedOption);
+                    
+                    const filteredOption = this.optionsToDisplay.find((option) => {
+                        console.log(option.label);
+                        console.log(event.key);
+                        return option.label.toLowerCase().charAt(0) === event.key.toLowerCase();
+                    });
+
+                    //this.updateSelectedOption(filteredOption.value);
+                    //this.selectedOption = filteredOption;
+                    this.selectItem(event, filteredOption);
+                    console.log(filteredOption);
+                    this.selectedOptionUpdated = true;
+                }
             break;
         }
     }
