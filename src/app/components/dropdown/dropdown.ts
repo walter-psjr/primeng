@@ -231,6 +231,8 @@ export class Dropdown implements OnInit,AfterViewInit,AfterContentInit,AfterView
     public selectedOptionUpdated: boolean;
     
     public filterValue: string;
+
+    public selectedOptionByKey: any;
     
     constructor(public el: ElementRef, public domHandler: DomHandler, public renderer: Renderer2, private cd: ChangeDetectorRef,
                 public objectUtils: ObjectUtils, public zone: NgZone) {}
@@ -509,6 +511,46 @@ export class Dropdown implements OnInit,AfterViewInit,AfterContentInit,AfterView
             return;
         }
 
+        // a-z
+        if (event.which >= 65 && event.which <= 90) {
+            console.log(event.key);
+            console.log(this.optionsToDisplay);
+            console.log(this.selectedOption);
+
+            let filteredOption: any;
+
+            if (!this.selectedOptionByKey) {
+                filteredOption = this.optionsToDisplay.find((option) => {
+                    return option.label.toLowerCase().charAt(0) === event.key.toLowerCase();
+                });
+            } else {
+                const sameLetter = this.optionsToDisplay.reduce((accumulator, option) => {
+                    if (option.label.toLowerCase().charAt(0) === event.key.toLowerCase()) {
+                        accumulator++;
+                    }
+
+                    return accumulator;
+                }, 0);
+
+                if (sameLetter > 1) {
+                    let selectedItemIndex = this.findOptionIndex(this.selectedOptionByKey.value, this.optionsToDisplay);
+                    let nextItemIndex = selectedItemIndex + 1;
+
+                    filteredOption = this.optionsToDisplay[nextItemIndex];
+                }
+
+                console.log(sameLetter);
+            }
+
+            this.selectedOptionByKey = filteredOption;
+
+            this.selectItem(event, filteredOption);
+            console.log(filteredOption);
+            this.selectedOptionUpdated = true;
+
+            return;
+        }
+
         switch(event.which) {
             //down
             case 40:
@@ -604,27 +646,6 @@ export class Dropdown implements OnInit,AfterViewInit,AfterContentInit,AfterView
             case 27:
             case 9:
                 this.hide();
-            break;
-
-            default:
-                // a-z
-                if (event.which >= 65 && event.which <= 90) {
-                    console.log(event.key);
-                    console.log(this.optionsToDisplay);
-                    console.log(this.selectedOption);
-                    
-                    const filteredOption = this.optionsToDisplay.find((option) => {
-                        console.log(option.label);
-                        console.log(event.key);
-                        return option.label.toLowerCase().charAt(0) === event.key.toLowerCase();
-                    });
-
-                    //this.updateSelectedOption(filteredOption.value);
-                    //this.selectedOption = filteredOption;
-                    this.selectItem(event, filteredOption);
-                    console.log(filteredOption);
-                    this.selectedOptionUpdated = true;
-                }
             break;
         }
     }
